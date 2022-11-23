@@ -2,7 +2,8 @@
 resolver = "2"
 members = [
     "ipix-desktop/src-tauri",
+    "ipix-rs"
 ]
 [patch.crates-io]
 ipix-desktop = { path = "./ipix-desktop/src-tauri" }
-ipix-rs = {path = "ipix-rs"}
+ipix-rs = {path = "./ipix-rs"}
