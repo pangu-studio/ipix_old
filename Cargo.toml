@@ -1,0 +1,8 @@
+[workspace]
+resolver = "2"
+members = [
+    "ipix-desktop/src-tauri",
+]
+[patch.crates-io]
+ipix-desktop = { path = "./ipix-desktop/src-tauri" }
+ipix-rs = {path = "ipix-rs"}
