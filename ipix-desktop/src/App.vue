@@ -1,8 +1,9 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import { ref } from 'vue'
-import { useDark, useToggle } from '@vueuse/core'
+import { ref,onMounted } from 'vue'
+import { useDark, useToggle} from '@vueuse/core'
+import { invoke } from '@tauri-apps/api/tauri';
 import {
   Document,
   Menu as IconMenu,
@@ -22,6 +23,16 @@ const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
 const toggleDark = useToggle(isDark)
+onMounted(() => {
+  invoke("init",{env: import.meta.env.MODE}).then((_) => {
+    // return null
+  }).catch((err) => {
+    console.log(err)
+  }).finally(() => {
+    console.log("init finished")
+  });
+
+})
 
 // function toggleDark() {
 //   useToggle(isDark)
@@ -33,7 +44,7 @@ const toggleDark = useToggle(isDark)
     <el-aside width="120px" class="aside" :class="isCollapse ? activeClass : ''">
       <el-menu default-active="2" class="el-menu-vertical-demo" :collapse="isCollapse" @open="handleOpen" router
         :collapse-transition="false" @close="handleClose">
-        <el-menu-item index="0" class="logo">LOGO
+        <el-menu-item index="/" class="logo">LOGO
         </el-menu-item>
 
         <el-menu-item index="/">
@@ -42,7 +53,7 @@ const toggleDark = useToggle(isDark)
           </el-icon>
           <template #title>图床</template>
         </el-menu-item>
-        <el-menu-item index="3">
+        <el-menu-item  index="/repo">
           <el-icon>
             <document />
           </el-icon>

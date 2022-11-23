@@ -29,7 +29,7 @@ pub fn app_data_path(path: String) -> &'static Mutex<String> {
 }
 
 //初始化全局db
-async fn db() -> Result<Pool<Sqlite>, sqlx::Error> {
+pub async fn db() -> Result<Pool<Sqlite>, sqlx::Error> {
     let app_data_path = app_data_path("".to_string()).lock().unwrap().to_string();
     let db_path = app_data_path + "/data.db";
     debug!("db_path: {}",db_path);
@@ -43,11 +43,6 @@ async fn db() -> Result<Pool<Sqlite>, sqlx::Error> {
 }
 
 static DB_ONCE_CELL: tokio::sync::OnceCell<Pool<Sqlite>> = tokio::sync::OnceCell::const_new();
-
-// get db instance
-// pub async fn db_conn_pool() -> Result<&'static Pool<Sqlite>, sqlx::Error> {
-//     DB_ONCE_CELL.get_or_try_init(db).await
-// }
 
 pub async fn db_conn_pool() -> Result<&'static Pool<Sqlite>, Error> {
     DB_ONCE_CELL.get_or_try_init(db).await.or_else(|err| Err(Database(err)))
@@ -63,9 +58,12 @@ pub fn init_logger(level: i8) {
     if level == 0 {
         ter = TermLogger::new(LevelFilter::Debug, Config::default(), TerminalMode::Mixed,
                               ColorChoice::Auto);
+    } else if level == 1 {
+        ter = TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Mixed,
+                              ColorChoice::Auto)
     } else {
         ter = TermLogger::new(LevelFilter::Warn, Config::default(), TerminalMode::Mixed,
-                              ColorChoice::Auto)
+        ColorChoice::Auto)
     }
 
     CombinedLogger::init(

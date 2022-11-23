@@ -1,4 +1,4 @@
 run:
-	cd ./ipix-desktop && pnpm tauri dev
+	cd ./ipix-desktop && pnpm install && pnpm tauri dev
 build:
-	pnpm tauri build
+	cd ./ipix-desktop && pnpm install && pnpm tauri build

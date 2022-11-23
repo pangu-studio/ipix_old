@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import Upload from "~/components/Upload.vue";
 import Setting from "~/components/Setting.vue";
+import Repository from "../components/Repository.vue";
 
 const routes = [
     {
@@ -12,6 +13,11 @@ const routes = [
         path: "/setting",
         name: "About",
         component: Setting,
+    },
+    {
+        path: "/repo",
+        name: "Repository",
+        component: Repository,
     },
 ];
 

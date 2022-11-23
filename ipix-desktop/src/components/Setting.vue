@@ -57,15 +57,13 @@
 import { onMounted, ref } from "vue";
 import { Store } from 'tauri-plugin-store-api';
 import { appDir } from '@tauri-apps/api/path';
-import { invoke} from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/tauri';
 
 interface QiniuSettings { ak: '', sk: '', bucket: '', prefix: '', host: '' }
 let qiniuSettings = ref<QiniuSettings>({ ak: '', sk: '', bucket: '', prefix: '', host: '' });
 
 let store: Store;
 async function initStore() {
-    let gret = await invoke("greet", {name: "abc"})
-    console.log(gret)
     if (store == undefined || store == null) {
         const appDirPath = await appDir();
         store = new Store(appDirPath + import.meta.env.APP_DB_NAME);
