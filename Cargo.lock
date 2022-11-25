@@ -1629,6 +1629,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ipix-ios"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ipix-rs",
+ "libc",
+ "log",
+ "once_cell",
+ "simplelog",
+ "tokio",
+ "uuid 1.2.2",
+]
+
+[[package]]
 name = "ipix-rs"
 version = "0.1.0"
 dependencies = [

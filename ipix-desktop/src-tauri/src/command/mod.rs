@@ -1,12 +1,12 @@
-use chrono::Utc;
-use tauri::AppHandle;
-use uuid::Uuid;
+pub mod repo;
+pub mod oss;
+pub mod account;
 
-use ipix_rs::biz::{repo::MediaRepository, Model};
 use ipix_rs::constant;
+use tauri::AppHandle;
 
 #[tauri::command]
-pub async fn init(app_handle: AppHandle, env: String) -> Result<(), String> {
+pub async fn init_lib(app_handle: AppHandle, env: String) -> Result<(), String> {
     //TODO check env if dev using dev.db and debug log level else if prod prod.db
     println!("init env: {}", env);
 
@@ -23,33 +23,5 @@ pub async fn init(app_handle: AppHandle, env: String) -> Result<(), String> {
             error!("migrations failed: {}", err);
             Err(err.to_string())
         }
-    }
-}
-// remember to call `.manage(MyState::default())`
-#[tauri::command]
-pub async fn create_media_repo(name: String, description: String) -> Result<(), String> {
-    let mut repo = MediaRepository::new(Uuid::new_v4().to_string(), name, description);
-    repo.create_time = Utc::now();
-    info!("create_media_repo: {:?}", repo);
-    let res = repo.save().await;
-    match res {
-        Ok(_) => Ok(()),
-        Err(err) => Err(err.to_string()),
-    }
-}
-
-#[tauri::command]
-pub async fn find_media_repo(id: String) -> Result<MediaRepository, String> {
-    match MediaRepository::find(&id).await {
-        Ok(repo) => Ok(repo),
-        Err(err) => Err(err.to_string()),
-    }
-}
-#[tauri::command]
-pub async fn list_all_media_repo() -> Result<Vec<MediaRepository>, String> {
-    info!("list all media repo");
-    match MediaRepository::find_all().await {
-        Ok(repos) => Ok(repos),
-        Err(err) => Err(err.to_string()),
     }
 }

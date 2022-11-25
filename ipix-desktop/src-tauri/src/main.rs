@@ -3,55 +3,56 @@
     windows_subsystem = "windows"
 )]
 
-
 #[macro_use]
 extern crate log;
-extern crate simplelog;
 extern crate serde;
+extern crate simplelog;
 
 pub mod command;
 pub mod storage;
 
-use ipix_rs::{add};
-
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    println!("abcd {}", add(1, 2));
-    format!("Hello, {}! pix 0!", name)
-}
-#[tauri::command]
-fn upload_token(key: &str) -> String {
-    format!("{}", storage::qiniu::upload_token(key).unwrap())
-}
-#[tauri::command]
-fn upload_file(
-    key: &str,
-    access_key: &str,
-    secret_key: &str,
-    bucket_name: &str,
-    prefix: &str,
-    window: tauri::Window,
-) -> String {
-    storage::qiniu::upload_file(key, access_key, secret_key, bucket_name, prefix, window).unwrap()
-    // format!("{}", storage::qiniu::upload_token(key).unwrap())
-}
 
-use crate::command::{init,create_media_repo, find_media_repo, list_all_media_repo};
+use crate::command::oss::{upload_file, upload_token};
+use crate::command::repo::{create_media_repo, find_media_repo, list_all_media_repo};
+use crate::command::account::{create_storate_account,list_all_storage_account};
+use ipix_rs::constant;
+use std::fs;
+use tauri::api::path;
+use tauri::async_runtime;
 use tauri_plugin_store::PluginBuilder;
 fn main() {
-
+    //init ipix-rs lib
+    init_lib();
     tauri::Builder::default()
         .plugin(PluginBuilder::default().build())
         .invoke_handler(tauri::generate_handler![
-            init,
-            greet,
             upload_token,
             upload_file,
             create_media_repo,
             list_all_media_repo,
-            find_media_repo
+            find_media_repo,
+            create_storate_account,
+            list_all_storage_account
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+fn init_lib() {
+    let mut p = path::data_dir().unwrap();
+    p = p.join("iPix");
+    let dbpath = p.as_path().as_os_str().to_str().unwrap();
+    fs::create_dir_all(p.clone()).unwrap();
+    println!("data dir {:?}", dbpath);
+    constant::app_data_path(dbpath.to_string());
+    constant::init_logger(0);
+    match async_runtime::block_on(constant::run_migrations()) {
+        Ok(_) => {
+            println!("success");
+        }
+        Err(err) => {
+            println!("error: {:?}", err)
+        }
+    };
 }

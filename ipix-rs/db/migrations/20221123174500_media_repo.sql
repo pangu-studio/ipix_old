@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS m_repos
+CREATE TABLE IF NOT EXISTS m_repo
 (
     id             TEXT PRIMARY KEY NOT NULL,
     name           TEXT NOT NULL,

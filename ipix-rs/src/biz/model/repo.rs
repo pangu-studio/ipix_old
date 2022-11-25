@@ -1,19 +1,18 @@
-
-use chrono::{DateTime,Utc};
-use sqlx::FromRow;
 use async_trait::async_trait;
+use chrono::{DateTime, Utc};
+use sqlx::FromRow;
 
-use crate::biz::Model;
-use crate::errors::Error;
+use crate::biz::model::Model;
 use crate::constant::db_conn_pool;
-#[derive(Debug, Clone,FromRow,serde::Serialize)]
+use crate::errors::Error;
+#[derive(Debug, Clone, FromRow, serde::Serialize)]
 pub struct MediaRepository {
     // ...
     pub id: String,
     pub name: String,
     pub description: String,
     pub create_time: DateTime<Utc>,
-    pub deleted: bool
+    pub deleted: bool,
 }
 
 impl MediaRepository {
@@ -23,7 +22,7 @@ impl MediaRepository {
             name,
             description,
             create_time: Utc::now(),
-            deleted: false
+            deleted: false,
         }
     }
 
@@ -33,41 +32,38 @@ impl MediaRepository {
             .fetch_all(conn)
             .await
             .or_else(|err| Err(Error::Database(err)))?;
+        info!("find_all: {:?}", repos);
         Ok(repos)
     }
-    // pub fn delete(&mut self) {
-    //     self.deleted = true;
-    // }
-    // pub fn save(&self) -> Result<(), Error> {
-    //     // ...
-    // }
-    // pub fn find(id: &str) -> Result<Self, Error> {
-    //     // ...
-    // }
 }
 #[async_trait]
-impl Model<MediaRepository> for MediaRepository {
-    async fn delete(&mut self)->Result<(), Error> {
+impl Model<MediaRepository, String> for MediaRepository {
+    async fn delete(&mut self) -> Result<(), Error> {
         self.deleted = true;
         let pool = db_conn_pool().await?;
-        sqlx::query(r#"
-        DELETE FROM media_repos WHERE id = ?"#)
-        .bind(self.id.to_owned()).execute(pool)
+        sqlx::query(
+            format!(r#"
+        DELETE FROM {} WHERE id = ?"#,
+        Self::table_name()).as_str())
+        .bind(self.id.to_owned())
+        .execute(pool)
         .await
         .or_else(|err| Err(Error::Database(err)))?;
         Ok(())
     }
-     async fn save(&self) -> Result<(), Error> {
+    async fn save(&mut self) -> Result<(), Error> {
         if self.id.is_empty() || self.name.is_empty() {
-            return Err(Error::InvalidParams("repo-> id,name cannot be empty".to_string()));
+            return Err(Error::InvalidParams(
+                "repo-> id,name cannot be empty".to_string(),
+            ));
         }
         let pool = db_conn_pool().await?;
-    
-        let sql = r#"
-        INSERT INTO m_repos (id, name, description, create_time, deleted)
+
+        let sql = format!(r#"
+        INSERT INTO {} (id, name, description, create_time, deleted)
         VALUES (?1, ?2, ?3, ?4, ?5);
-        "#;
-        sqlx::query(sql)
+        "#, Self::table_name());
+        sqlx::query(&sql)
             .bind(self.id.to_owned())
             .bind(self.name.to_owned())
             .bind(self.description.to_owned())
@@ -81,15 +77,17 @@ impl Model<MediaRepository> for MediaRepository {
     }
     async fn update(&self) -> Result<(), Error> {
         if self.id.is_empty() || self.name.is_empty() {
-            return Err(Error::InvalidParams("repo-> id,name cannot be empty".to_string()));
+            return Err(Error::InvalidParams(
+                "repo-> id,name cannot be empty".to_string(),
+            ));
         }
         let pool = db_conn_pool().await?;
-    
-        let sql = r#"
-        UPDATE m_repos SET (name, description, create_time, deleted)
+
+        let sql = format!(r#"
+        UPDATE {} SET (name, description, create_time, deleted)
         VALUES (?1, ?2, ?3, ?4, ?5);
-        "#;
-        sqlx::query(sql)
+        "#, Self::table_name());
+        sqlx::query(&sql)
             .bind(self.id.to_owned())
             .bind(self.name.to_owned())
             .bind(self.description.to_owned())
@@ -101,10 +99,20 @@ impl Model<MediaRepository> for MediaRepository {
         Ok(())
         // ...
     }
-    async fn find(id: &str) -> Result<Self, Error> {
+    async fn find(id: String) -> Result<Self, Error> {
         // ...
         let pool = db_conn_pool().await?;
-       sqlx::query_as::<_, MediaRepository>(r#"
-        SELECT * FROM m_repos WHERE id = ?"#).bind(id).fetch_one(pool).await.or_else(|err| Err(Error::Database(err)))
+        sqlx::query_as::<_, MediaRepository>(format!(
+            r#"
+        SELECT * FROM {} WHERE id = ?"#,
+        Self::table_name()
+        ).as_str())
+        .bind(id)
+        .fetch_one(pool)
+        .await
+        .or_else(|err| Err(Error::Database(err)))
+    }
+    fn table_name() -> String {
+        return "m_repo".to_string();
     }
 }

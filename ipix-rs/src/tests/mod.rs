@@ -71,7 +71,14 @@ pub async fn initialize() -> &'static anyhow::Result<()> {
         fs::remove_file("./data.db").unwrap_or_else(|why| {
             error!("! {:?}",why.kind())
         });
-        run_migrations().await?;
+        match run_migrations().await {
+            Ok(_) => {
+                info!("migrations done");
+            }
+            Err(e) => {
+                error!("migrations failed: {}", e);
+            }
+        };
 
         //read sql file
         let sql = match fs::read_to_string("./db/test/data.sql") {

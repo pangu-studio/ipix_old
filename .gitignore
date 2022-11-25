@@ -3,3 +3,5 @@
 target
 .vscode/settings.json
 .DS_Store
+ipix-ios/
+Cargo.lock

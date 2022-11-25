@@ -1,5 +1,6 @@
 <template>
   <div class="pic-uploader">
+    <h1>iPix</h1>
     <div class="middle-con" :class="[isHover ? 'drag-hover' : '']">
       <div class="upload-icon">
         <el-icon>
