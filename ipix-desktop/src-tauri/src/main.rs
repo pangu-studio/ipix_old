@@ -13,9 +13,12 @@ pub mod storage;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 
+use crate::command::account::{
+    create_storate_account, delete_storage_account, list_all_storage_account,
+    remove_storage_account,update_storate_account
+};
 use crate::command::oss::{upload_file, upload_token};
 use crate::command::repo::{create_media_repo, find_media_repo, list_all_media_repo};
-use crate::command::account::{create_storate_account,list_all_storage_account};
 use ipix_rs::constant;
 use std::fs;
 use tauri::api::path;
@@ -33,7 +36,10 @@ fn main() {
             list_all_media_repo,
             find_media_repo,
             create_storate_account,
-            list_all_storage_account
+            list_all_storage_account,
+            delete_storage_account,
+            remove_storage_account,
+            update_storate_account
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

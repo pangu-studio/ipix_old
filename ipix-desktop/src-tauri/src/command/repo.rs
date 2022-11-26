@@ -1,18 +1,17 @@
-use chrono::Utc;
-use uuid::Uuid;
-
-use ipix_rs::biz::model::{Model};
-use ipix_rs::biz::model::repo::{MediaRepository};
+use ipix_rs::biz::model::repo::MediaRepository;
+use ipix_rs::biz::model::Model;
 
 // remember to call `.manage(MyState::default())`
 #[tauri::command]
-pub async fn create_media_repo(name: String, description: String) -> Result<(), String> {
-    let mut repo = MediaRepository::new(Uuid::new_v4().to_string(), name, description);
-    repo.create_time = Utc::now();
+pub async fn create_media_repo(data: MediaRepository) -> Result<String, String> {
+    let repo: &mut MediaRepository = &mut data.clone();
     info!("create_media_repo: {:?}", repo);
     let res = repo.save().await;
     match res {
-        Ok(_) => Ok(()),
+        Ok(id) => {
+            info!("create media success: {:?},id: {}", repo, id);
+            Ok(id)
+        }
         Err(err) => Err(err.to_string()),
     }
 }

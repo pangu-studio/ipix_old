@@ -7,12 +7,14 @@ use async_trait::async_trait;
 #[async_trait]
 pub trait Model<T, ID> {
     //save model to db
-    async fn save(&mut self) -> Result<(), Error>;
+    async fn save(&mut self) -> Result<ID, Error>;
     //update model to db
     async fn update(&self) -> Result<(), Error>;
     //find model by id from db
     async fn find(id: ID) -> Result<T, Error>;
     //delete model
-    async fn delete(&mut self) -> Result<(), Error>;
+    async fn remove(&mut self) -> Result<(), Error>;
+    //delete model
+    async fn delete(id: ID) -> Result<(), Error>;
     fn table_name() -> String;
 }
