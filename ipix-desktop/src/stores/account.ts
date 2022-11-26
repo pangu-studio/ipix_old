@@ -34,7 +34,7 @@ export const useAccountStore = defineStore('account', {
             try {
                 //save to db
                 await createAccount(account) as Account
-                this._list.push(account)
+                this._list.unshift(account)
             } catch (err) {
                 console.error(err)
                 throw err

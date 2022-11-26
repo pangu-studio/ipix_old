@@ -75,7 +75,7 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="editAccountDialogVisible = false">取 消</el-button>
+            <el-button @click="cancelSaveAccount">取 消</el-button>
             <el-button type="primary" @click="saveAccount">确 定</el-button>
         </div>
     </el-dialog>
@@ -124,7 +124,9 @@ const editAccountForm = ref<Account>({} as Account)
 function openEditDialog(mod: string, account?: Account) {
     if (mod === 'add') {
         editDialogMod.value = 'add'
-        editAccountForm.value = {} as Account
+        if (!editAccountForm.value) {
+            editAccountForm.value = {} as Account
+        }
         editAccountDialogVisible.value = true
 
     } else if (mod === 'edit') {
@@ -134,6 +136,7 @@ function openEditDialog(mod: string, account?: Account) {
         editAccountDialogVisible.value = true
     }
 }
+
 
 const value = ref('')
 
@@ -170,16 +173,16 @@ const storageProviderName = computed(() => {
     }
 })
 
-const keyPolicyOptions = [
-    {
-        value: 1,
-        label: '前缀+UUID',
-    },
-    {
-        value: 2,
-        label: '前缀+日期+UUID',
-    },
-]
+// const keyPolicyOptions = [
+//     {
+//         value: 1,
+//         label: '前缀+UUID',
+//     },
+//     {
+//         value: 2,
+//         label: '前缀+日期+UUID',
+//     },
+// ]
 function handleRemoveAccount(id: number) {
     store.removeAccount(id).then(() => {
     }).catch((err) => {
@@ -219,6 +222,23 @@ function saveAccount() {
         })
     }
 
+}
+function cancelSaveAccount() {
+    // if is add, return
+    if (editDialogMod.value === 'add') {
+        editAccountDialogVisible.value = false
+        return
+    }
+
+    if (editDialogMod.value === 'edit') {
+        //set value to empty
+        editAccountForm.value = {} as Account
+        addition.value = {
+            bucket: '',
+            host: '',
+        }
+    }
+    editAccountDialogVisible.value = false
 }
 onMounted(() => {
     //fetch account list from backend
