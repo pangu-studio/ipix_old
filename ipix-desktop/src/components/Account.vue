@@ -32,7 +32,7 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-dialog v-model="editAccountDialogVisible" :title="editDialogTitle" center>
+    <el-dialog v-model="editAccountDialogVisible" :title="editDialogTitle" center @close="cancelSaveAccount">
         <el-form :model="editAccountForm" label-width="82px">
             <el-form-item label="名称" required>
                 <el-input v-model="editAccountForm.name" placeholder="个人账号" />
