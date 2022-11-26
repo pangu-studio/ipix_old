@@ -1,6 +1,6 @@
 # iPix
 
-又一图床工具、基于rust + tauri + vue3 + Ts 构建, 打包体积小 5M, 轻量、高效、安全、可靠。 
+又一图床工具、基于rust + tauri + vue3 + Ts 构建, 跨平台(Mac、Windows、Linux)、 打包体积小(7M)、 轻量、高效、安全、可靠。 
 
 - [x] 支持七牛存储
 - [ ] 素材库管理
