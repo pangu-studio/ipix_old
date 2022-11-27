@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import 'element-plus/theme-chalk/src/message-box.scss'
 import "~/styles/index.scss";
 import App from "./App.vue";
 import router from './router'
