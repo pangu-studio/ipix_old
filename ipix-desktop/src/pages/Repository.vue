@@ -137,20 +137,38 @@
             </el-card>
         </el-col>
     </el-row>
+
+    <el-dialog v-model="editDialogFormVisible" title="重命名素材库">
+        <el-form :model="editForm">
+            <el-form-item label="素材库名称">
+                <el-input v-model="editForm.name" autocomplete="off" />
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="editDialogFormVisible = false">取消</el-button>
+                <el-button type="primary" @click="editDialogFormVisible = false">
+                    保存
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { invoke } from '@tauri-apps/api/tauri';
-import {
-    Delete,
-    DeleteFilled,
-    Edit,
-    Setting,
-} from '@element-plus/icons-vue'
 
-import { ElMessage, ElMessageBox } from "element-plus"
+import { ElMessage, ElMessageBox } from "element-plus";
+import { Repository } from "@/dto/repostiory";
+
+
+let editDialogFormVisible = ref(false)
+
+let editForm = ref({} as Repository)
+
 
 function handleRenameRepo() {
+    editDialogFormVisible.value = true
     ElMessage({
         message: '功能开发中',
         type: 'success',

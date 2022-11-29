@@ -3,7 +3,7 @@ use chrono::{DateTime, Utc};
 use sqlx::FromRow;
 use uuid::Uuid;
 
-use crate::biz::model::Model;
+use crate::biz::model::{Delete, Model, Store};
 use crate::constant::db_conn_pool;
 use crate::errors::Error;
 #[derive(Debug, Clone, FromRow, serde::Serialize, serde::Deserialize)]
@@ -29,9 +29,18 @@ impl MediaRepository {
         }
     }
 
+    // find_all list all repositories.
     pub async fn find_all() -> Result<Vec<MediaRepository>, Error> {
         let conn = db_conn_pool().await?;
-        let repos = sqlx::query_as::<_, MediaRepository>("select * from m_repos where deleted = 0")
+
+        let sql = format!(
+            r#"
+            SELECT * FROM {} WHERE deleted = 0;
+            "#,
+            Self::table_name()
+        );
+
+        let repos = sqlx::query_as::<_, MediaRepository>(&sql)
             .fetch_all(conn)
             .await
             .or_else(|err| Err(Error::Database(err)))?;
@@ -39,8 +48,13 @@ impl MediaRepository {
         Ok(repos)
     }
 }
+impl Model for MediaRepository {
+    fn table_name() -> String {
+        return "m_repo".to_string();
+    }
+}
 #[async_trait]
-impl Model<MediaRepository, String> for MediaRepository {
+impl Store<MediaRepository, String> for MediaRepository {
     async fn save(&mut self) -> Result<String, Error> {
         //check params
         let id = Uuid::new_v4().to_string();
@@ -106,7 +120,7 @@ impl Model<MediaRepository, String> for MediaRepository {
         sqlx::query_as::<_, MediaRepository>(
             format!(
                 r#"
-        SELECT * FROM {} WHERE id = ?"#,
+        SELECT * FROM {} WHERE id = ? and deleted = 0"#,
                 Self::table_name()
             )
             .as_str(),
@@ -116,10 +130,6 @@ impl Model<MediaRepository, String> for MediaRepository {
         .await
         .or_else(|err| Err(Error::Database(err)))
     }
-    fn table_name() -> String {
-        return "m_repo".to_string();
-    }
-
     async fn remove(&mut self) -> Result<(), Error> {
         // ...
         let pool = db_conn_pool().await?;
@@ -137,7 +147,9 @@ impl Model<MediaRepository, String> for MediaRepository {
         .or_else(|err| Err(Error::Database(err)))?;
         Ok(())
     }
-
+}
+#[async_trait]
+impl Delete<String> for MediaRepository {
     async fn delete(id: String) -> Result<(), Error> {
         let pool = db_conn_pool().await?;
         sqlx::query(

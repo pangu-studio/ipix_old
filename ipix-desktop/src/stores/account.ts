@@ -3,7 +3,11 @@ import { createAccount, updateAccount as updateAccountApi, listAccount as listAc
 import { defineStore } from "pinia";
 // import { da } from 'element-plus/es/locale';
 export const useAccountStore = defineStore('account', {
-    state: () => ({ _list: [] as Account[], selectedProvider: 0 }),
+    state: () => (
+        {
+            _list: [] as Account[],
+            selectedProvider: 0
+        }),
     getters: {
         list: (state) => state._list,
         filterList: (state) => {

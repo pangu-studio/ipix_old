@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
-import Upload from "~/components/Upload.vue";
-import Account from "~/components/Account.vue";
-import Repository from "../components/Repository.vue";
+import Upload from "~/pages/Upload.vue";
+import Account from "~/pages/Account.vue";
+import Repository from "~/pages/Repository.vue";
 import { appWindow } from '@tauri-apps/api/window';
 
 const routes = [

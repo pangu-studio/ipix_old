@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use sqlx::FromRow;
 
-use crate::biz::model::Model;
+use crate::biz::model::{Delete, Model, Store};
 use crate::constant::db_conn_pool;
 use crate::errors::Error;
 
@@ -19,7 +19,7 @@ pub struct StorageAccount {
     pub create_time: Option<DateTime<Utc>>,
     pub deleted: Option<bool>,
 }
-
+// impl StorageAccount
 impl StorageAccount {
     pub fn new(name: String, app_key: String, secret: String, provider: i32) -> Self {
         Self {
@@ -50,11 +50,13 @@ impl StorageAccount {
         Ok(repos)
     }
 }
-#[async_trait]
-impl Model<StorageAccount, i64> for StorageAccount {
+impl Model for StorageAccount {
     fn table_name() -> String {
         "m_storage_account".to_string()
     }
+}
+#[async_trait]
+impl Store<StorageAccount, i64> for StorageAccount {
     async fn save(&mut self) -> Result<i64, Error> {
         if self.name.is_empty() {
             return Err(Error::InvalidParams(
@@ -161,7 +163,9 @@ impl Model<StorageAccount, i64> for StorageAccount {
             Err(err) => Err(Error::Database(err)),
         }
     }
-
+}
+#[async_trait]
+impl Delete<i64> for StorageAccount {
     async fn delete(id: i64) -> Result<(), Error> {
         if id == 0 {
             return Err(Error::InvalidParams(

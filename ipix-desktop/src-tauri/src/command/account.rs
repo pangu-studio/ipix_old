@@ -1,4 +1,4 @@
-use ipix_rs::biz::model::{account::StorageAccount, Model};
+use ipix_rs::biz::model::{account::StorageAccount, Delete, Store};
 #[tauri::command]
 pub async fn create_storate_account(data: StorageAccount) -> Result<i64, String> {
     info!("create_media_repo: {:?}", data);
