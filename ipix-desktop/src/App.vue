@@ -1,28 +1,28 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import { ref, onMounted } from 'vue'
-import { useDark, useToggle } from '@vueuse/core'
-import { invoke } from '@tauri-apps/api/tauri';
+import { ref, onMounted } from "vue";
+import { useDark, useToggle } from "@vueuse/core";
+import { invoke } from "@tauri-apps/api/tauri";
 import {
   Document,
   Menu as IconMenu,
   Expand,
   Fold,
   Setting,
-} from '@element-plus/icons-vue'
+} from "@element-plus/icons-vue";
 
-let activeClass = "el-menu--collapse"
+let activeClass = "el-menu--collapse";
 
-const isCollapse = ref(true)
-let isDark = useDark()
+const isCollapse = ref(true);
+let isDark = useDark();
 const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
+  console.log(key, keyPath);
+};
 const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const toggleDark = useToggle(isDark)
+  console.log(key, keyPath);
+};
+const toggleDark = useToggle(isDark);
 onMounted(() => {
   // invoke("init",{env: import.meta.env.MODE}).then((_) => {
   //   // return null
@@ -31,8 +31,7 @@ onMounted(() => {
   // }).finally(() => {
   //   console.log("init finished")
   // });
-
-})
+});
 
 // function toggleDark() {
 //   useToggle(isDark)
@@ -42,12 +41,17 @@ onMounted(() => {
 <template>
   <el-container class="container">
     <el-aside width="120px" class="aside" :class="isCollapse ? activeClass : ''">
-      <el-menu default-active="2" class="el-menu-vertical-demo" :collapse="isCollapse" @open="handleOpen" router
-        :collapse-transition="false" @close="handleClose">
+      <el-menu
+        default-active="2"
+        class="el-menu-vertical-demo"
+        :collapse="isCollapse"
+        @open="handleOpen"
+        router
+        :collapse-transition="false"
+        @close="handleClose"
+      >
         <el-menu-item index="/" class="logo">
-          <el-icon>
-            <icon-menu />
-          </el-icon>
+          <img src="@/assets/logo.png" style="width: 32px" />
         </el-menu-item>
 
         <el-menu-item index="/">
@@ -70,24 +74,47 @@ onMounted(() => {
         </el-menu-item>
       </el-menu>
       <div class="bottom-tool" :class="isCollapse ? activeClass : 'bt-ex'">
+        <el-switch
+          class="dark-switch"
+          inline-prompt
+          active-text="黑"
+          inactive-text="白"
+          v-model="isDark"
+          :change="useToggle()"
+          size="small"
+        />
 
-        <el-switch class="dark-switch" inline-prompt active-text="黑" inactive-text="白" v-model="isDark"
-          :change="useToggle()" size="small" />
-
-        <el-button circle class="ex-btn" v-if="isCollapse" @click="isCollapse = !isCollapse" :icon="Expand" />
-        <el-button circle class="ex-btn" v-if="!isCollapse" @click="isCollapse = !isCollapse" :icon="Fold" />
+        <el-button
+          circle
+          class="ex-btn"
+          v-if="isCollapse"
+          @click="isCollapse = !isCollapse"
+          :icon="Expand"
+        />
+        <el-button
+          circle
+          class="ex-btn"
+          v-if="!isCollapse"
+          @click="isCollapse = !isCollapse"
+          :icon="Fold"
+        />
       </div>
     </el-aside>
     <el-main class="">
       <router-view />
     </el-main>
   </el-container>
-
 </template>
 
 <style lang="scss" scoped>
 .logo {
   justify-content: center;
+  img {
+    cursor: pointer;
+  }
+}
+.logo:hover {
+  background: none;
 }
 
 .logo.vite:hover {
@@ -117,7 +144,6 @@ h1 {
 }
 
 .aside {
-
   // height: 100%;
   .bt-ex {
     width: 120px;
@@ -144,9 +170,6 @@ h1 {
       border: none;
     }
   }
-
-
-
 }
 
 .container {
