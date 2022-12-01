@@ -17,6 +17,7 @@
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="handleRenameRepo">重命名</el-dropdown-item>
+                  <el-dropdown-item @click="handleSetDefault">设为默认</el-dropdown-item>
                   <el-dropdown-item divided @click="handleDeleleRepo" class="delete-drop">
                     <template #>
                       <span class="delete-btn">删除</span>
@@ -122,7 +123,12 @@
       </el-card>
     </el-col>
     <el-col :span="8">
-      <el-card class="repo-card" shadow="hover" style="text-align: center">
+      <el-card
+        class="repo-card"
+        shadow="hover"
+        style="text-align: center"
+        @click="hadleAddMediaRepo"
+      >
         <el-icon>
           <Plus />
         </el-icon>
@@ -145,6 +151,34 @@
       </span>
     </template>
   </el-dialog>
+
+  <el-dialog v-model="addRepoDialogFormVisible" title="新增素材库">
+    <el-form :model="editForm">
+      <el-form-item label="名称">
+        <el-input v-model="addRepoForm.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="域名">
+        <el-input v-model="addRepoForm.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="类型">
+        <el-input v-model="addRepoForm.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="key生成策略">
+        <el-input v-model="addRepoForm.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="key前缀">
+        <el-input v-model="addRepoForm.name" autocomplete="off" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="addRepoDialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="addRepoDialogFormVisible = false">
+          保存
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
@@ -154,8 +188,11 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { Repository } from "@/dto/repostiory";
 
 let editDialogFormVisible = ref(false);
+let addRepoDialogFormVisible = ref(false);
 
 let editForm = ref({} as Repository);
+
+let addRepoForm = ref({} as Repository);
 
 function handleRenameRepo() {
   editDialogFormVisible.value = true;
@@ -176,6 +213,31 @@ function handleDeleleRepo() {
       ElMessage({
         type: "success",
         message: `Your email is:${value}`,
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "Input canceled",
+      });
+    });
+}
+
+function hadleAddMediaRepo() {
+  addRepoDialogFormVisible.value = true;
+}
+
+function handleSetDefault() {
+  ElMessageBox.confirm("设当前素材库为默认存储库", "设为默认", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    // inputPattern: '',
+    // inputErrorMessage: "Invalid Email",
+  })
+    .then(({ value }) => {
+      ElMessage({
+        type: "success",
+        message: `设置默认存储库成功`,
       });
     })
     .catch(() => {
