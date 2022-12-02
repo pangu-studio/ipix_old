@@ -9,3 +9,8 @@ members = [
 ipix-desktop = { path = "./ipix-desktop/src-tauri" }
 ipix-rs = {path = "./ipix-rs"}
 # ipix-ios = {path = "./ipix-ios"}
+
+[profile.release]
+strip = true 
+lto = true
+opt-level = "s"
