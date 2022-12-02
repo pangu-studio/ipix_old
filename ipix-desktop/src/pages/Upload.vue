@@ -24,14 +24,14 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, h } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
-import { writeText, readText } from "@tauri-apps/api/clipboard";
+import { writeText } from "@tauri-apps/api/clipboard";
 import { ElMessage } from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
 
 import { appWindow } from "@tauri-apps/api/window";
 import { UnlistenFn, listen } from "@tauri-apps/api/event";
 import { Store } from "tauri-plugin-store-api";
-import { appDir } from "@tauri-apps/api/path";
+import { appDataDir } from "@tauri-apps/api/path";
 
 const value = ref("");
 
@@ -68,7 +68,7 @@ const qiniuTokenKey = "qiniu:token";
 let store: Store;
 async function initStore() {
   if (store == undefined || store == null) {
-    const appDirPath = await appDir();
+    const appDirPath = await appDataDir();
     store = new Store(appDirPath + import.meta.env.APP_DB_NAME);
   }
 }
