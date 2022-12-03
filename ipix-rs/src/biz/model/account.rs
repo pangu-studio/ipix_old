@@ -1,12 +1,15 @@
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use sqlx::FromRow;
+use serde::{Serialize,Deserialize};
 
 use crate::biz::model::{Delete, Model, Store};
 use crate::constant::db_conn_pool;
 use crate::errors::Error;
 
-#[derive(Debug, Clone, FromRow, serde::Serialize, serde::Deserialize)]
+
+
+#[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
 pub struct StorageAccount {
     // ...
     pub id: Option<i64>,
@@ -18,10 +21,16 @@ pub struct StorageAccount {
     pub addition: Option<String>,
     pub create_time: Option<DateTime<Utc>>,
     pub deleted: Option<bool>,
+
 }
 // impl StorageAccount
 impl StorageAccount {
-    pub fn new(name: String, app_key: String, secret: String, provider: i32) -> Self {
+    pub fn new(
+        name: String,
+        app_key: String,
+        secret: String,
+        provider: i32
+    ) -> Self {
         Self {
             id: None,
             name,
@@ -93,7 +102,7 @@ impl Store<StorageAccount, i64> for StorageAccount {
         Ok(self.id.unwrap().to_owned())
     }
 
-    async fn update(&self) -> Result<(), Error> {
+    async fn update(&mut self) -> Result<(), Error> {
         if self.id.is_none() || self.name.is_empty() {
             return Err(Error::InvalidParams(
                 "repo-> id,name cannot be empty".to_string(),

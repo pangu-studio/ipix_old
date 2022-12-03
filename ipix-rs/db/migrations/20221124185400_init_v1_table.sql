@@ -1,6 +1,4 @@
 
-ALTER TABLE m_repo ADD COLUMN addition TEXT DEFAULT '{}';
-
 -- --------------------------------------
 -- Table structure for m_storage_account
 -- --------------------------------------
@@ -10,10 +8,10 @@ CREATE TABLE IF NOT EXISTS m_storage_account (
     description TEXT,
     app_key TEXT NOT NULL,
     secret TEXT NOT NULL,
-    create_time TIMESTAMP NOT NULL,
     provider INTEGER DEFAULT 0,
     addition TEXT NOT NULL DEFAULT '{}',
-    deleted BOOLEAN NOT NULL DEFAULT 0
+    deleted BOOLEAN NOT NULL DEFAULT 0,
+    create_time TIMESTAMP NOT NULL
 );
 
 -- ---------------------------------

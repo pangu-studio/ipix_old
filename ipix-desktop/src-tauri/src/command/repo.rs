@@ -2,7 +2,7 @@ use ipix_rs::biz::model::{repo::MediaRepository, Delete, Store};
 
 // remember to call `.manage(MyState::default())`
 #[tauri::command]
-pub async fn create_media_repo(data: MediaRepository) -> Result<String, String> {
+pub async fn create_media_repository(data: MediaRepository) -> Result<String, String> {
     let repo: &mut MediaRepository = &mut data.clone();
     info!("create_media_repo: {:?}", repo);
     let res = repo.save().await;
@@ -16,13 +16,27 @@ pub async fn create_media_repo(data: MediaRepository) -> Result<String, String> 
 }
 
 #[tauri::command]
-pub async fn find_media_repo(id: String) -> Result<MediaRepository, String> {
+pub async fn update_media_repository(data: MediaRepository) -> Result<(), String> {
+    let repo: &mut MediaRepository = &mut data.clone();
+    info!("update_media_repo: {:?}", repo);
+    let res = repo.update().await;
+    match res {
+        Ok(_) => {
+            debug!("update media success: {:?}", repo);
+            Ok(())
+        }
+        Err(err) => Err(err.to_string()),
+    }
+}
+
+#[tauri::command]
+pub async fn find_media_repository(id: String) -> Result<MediaRepository, String> {
     MediaRepository::find(id)
         .await
         .map_err(|err| err.to_string())
 }
 #[tauri::command]
-pub async fn list_all_media_repo() -> Result<Vec<MediaRepository>, String> {
+pub async fn list_all_media_repository() -> Result<Vec<MediaRepository>, String> {
     debug!("list all media repo");
     match MediaRepository::find_all().await {
         Ok(repos) => Ok(repos),
@@ -30,7 +44,7 @@ pub async fn list_all_media_repo() -> Result<Vec<MediaRepository>, String> {
     }
 }
 #[tauri::command]
-pub async fn remove_media_repo(id: String) -> Result<(), String> {
+pub async fn remove_media_repository(id: String) -> Result<(), String> {
     debug!("remove media repo id: {}", id);
     //find one
     let mut repo = MediaRepository::find(id)
@@ -41,7 +55,7 @@ pub async fn remove_media_repo(id: String) -> Result<(), String> {
         .map_err(|err| err.to_string())
 }
 #[tauri::command]
-pub async fn delete_media_repo(id: String) -> Result<(), String> {
+pub async fn delete_media_repository(id: String) -> Result<(), String> {
     debug!("delete media repo id: {}", id);
     MediaRepository::delete(id)
         .await

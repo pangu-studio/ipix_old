@@ -14,7 +14,7 @@ pub trait Store<M: Model, ID> {
     //save model to db
     async fn save(&mut self) -> Result<ID, Error>;
     //update model to db
-    async fn update(&self) -> Result<(), Error>;
+    async fn update(&mut self) -> Result<(), Error>;
     //find model by id from db
     async fn find(id: ID) -> Result<M, Error>;
     //delete model
