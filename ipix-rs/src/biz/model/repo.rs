@@ -102,7 +102,7 @@ impl Store<MediaRepository, String> for MediaRepository {
             .bind(self.id.to_owned())
             .bind(self.name.to_owned())
             .bind(self.description.to_owned())
-            .bind(self.create_time.unwrap().timestamp())
+            .bind(self.create_time.to_owned())
             .bind(self.deleted)
             .execute(pool)
             .await
@@ -133,7 +133,7 @@ impl Store<MediaRepository, String> for MediaRepository {
             .bind(self.name.to_owned())
             .bind(self.description.to_owned())
             .bind(self.addition.to_owned())
-            .bind(self.update_time.unwrap().timestamp())
+            .bind(self.update_time.to_owned())
             .bind(self.deleted)
             .bind(self.id.to_owned())
             .execute(pool)
