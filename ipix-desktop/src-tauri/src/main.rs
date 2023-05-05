@@ -18,23 +18,23 @@ use crate::command::account::{
     remove_storage_account,update_storate_account
 };
 use crate::command::oss::{upload_file, upload_token};
-use crate::command::repo::{create_media_repo, find_media_repo, list_all_media_repo};
+use crate::command::repo::{create_media_repository, find_media_repository, list_all_media_repository, update_media_repository};
 use ipix_rs::constant;
 use std::fs;
 use tauri::api::path;
 use tauri::async_runtime;
-use tauri_plugin_store::PluginBuilder;
 fn main() {
     //init ipix-rs lib
     init_lib();
     tauri::Builder::default()
-        .plugin(PluginBuilder::default().build())
+    .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
             upload_token,
             upload_file,
-            create_media_repo,
-            list_all_media_repo,
-            find_media_repo,
+            create_media_repository,
+            update_media_repository,
+            list_all_media_repository,
+            find_media_repository,
             create_storate_account,
             list_all_storage_account,
             delete_storage_account,
