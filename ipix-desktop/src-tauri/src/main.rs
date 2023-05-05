@@ -23,12 +23,11 @@ use ipix_rs::constant;
 use std::fs;
 use tauri::api::path;
 use tauri::async_runtime;
-use tauri_plugin_store::PluginBuilder;
 fn main() {
     //init ipix-rs lib
     init_lib();
     tauri::Builder::default()
-        .plugin(PluginBuilder::default().build())
+    .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
             upload_token,
             upload_file,

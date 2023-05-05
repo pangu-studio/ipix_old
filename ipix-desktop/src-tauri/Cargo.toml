@@ -6,12 +6,12 @@ license = "AGPL v3"
 name = "ipix-desktop"
 repository = "https://github.com/pangu-studio/ipix.git"
 rust-version = "1.57"
-version = "0.1.0"
+version = "0.2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.2", features = [] }
+tauri-build = { version = "1.3", features = [] }
 
 [dependencies]
 ipix-rs = {path="../../ipix-rs"}
@@ -19,15 +19,13 @@ chrono = { version = "*"}
 qiniu-sdk = { version = "^0.2.0", features = ["upload-token", "upload"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tauri = { version = "1.2", features = ["api-all"] }
+tauri = { version = "1.3", features = ["api-all"] }
 uuid = {version = "1.1.2",features= ["v4"] }
 anyhow = "1.0.51"
 simplelog = { version = "^0.12.0", features = ["paris"] }
 log = "*"
-[dependencies.tauri-plugin-store]
-git = "https://github.com/tauri-apps/tauri-plugin-store"
-# tag = "v0.1.0"
-branch = "dev"
+tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
+
 [features]
 # by default Tauri runs in production mode
 # when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
